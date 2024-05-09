@@ -10,6 +10,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+//#include "MotionWarpingComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -91,6 +94,9 @@ void ARPG_Tutorial_SeriesCharacter::SetupPlayerInputComponent(UInputComponent* P
 
 		// Crouching
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &ARPG_Tutorial_SeriesCharacter::Sneak);
+
+		// Vaulting
+		EnhancedInputComponent->BindAction(VaultAction, ETriggerEvent::Started, this, &ARPG_Tutorial_SeriesCharacter::Vault);
 	}
 	else
 	{
@@ -136,6 +142,7 @@ void ARPG_Tutorial_SeriesCharacter::Look(const FInputActionValue& Value)
 
 void ARPG_Tutorial_SeriesCharacter::Sneak(const FInputActionValue& Value)
 {
+	printf_s("Sneak");
 	if (Controller != nullptr)
 	{
 		UCharacterMovementComponent* CharMove = GetCharacterMovement();
@@ -149,5 +156,26 @@ void ARPG_Tutorial_SeriesCharacter::Sneak(const FInputActionValue& Value)
 			Crouched = true;
 			CharMove->MaxWalkSpeed = 350.0f;
 		}
+	}
+}
+
+void ARPG_Tutorial_SeriesCharacter::Vault(const FInputActionValue& Value)
+{
+	printf_s("Vault");
+	const TArray<AActor*>ActorsToIgnore;
+	FHitResult OutHit;
+
+	for (int i = 0; i < 2; i++)
+	{
+		FVector start = GetActorLocation();
+		start.Z = i * 30; // offset spheres by 30 units
+
+		FRotator rotation = GetActorRotation();
+		FVector forward = UKismetMathLibrary::GetForwardVector(rotation);
+		forward *= 180.0f; // turn forward 180 degrees
+
+		FVector end = start + forward;
+
+		bool bHasHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 5.0f, TraceTypeQuery_MAX, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true);
 	}
 }

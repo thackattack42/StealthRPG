@@ -11,8 +11,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
-class USceneComponent;
-class USCS_Node;
+class MotionWarpingComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -50,7 +49,9 @@ class ARPG_Tutorial_SeriesCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* CrouchAction;
 
-	
+	/** Vault Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* VaultAction;
 
 public:
 	ARPG_Tutorial_SeriesCharacter();
@@ -66,6 +67,10 @@ protected:
 
 	/** Called for crouching input */
 	void Sneak(const FInputActionValue& Value);
+
+	/** Called for vaulting input */
+	UFUNCTION(BlueprintCallable)
+	void Vault(const FInputActionValue& Value);
 
 protected:
 	// APawn interface
