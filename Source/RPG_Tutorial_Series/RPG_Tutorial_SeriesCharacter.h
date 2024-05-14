@@ -69,7 +69,6 @@ protected:
 	void Sneak(const FInputActionValue& Value);
 
 	/** Called for vaulting input */
-	UFUNCTION(BlueprintCallable)
 	void Vault(const FInputActionValue& Value);
 
 protected:

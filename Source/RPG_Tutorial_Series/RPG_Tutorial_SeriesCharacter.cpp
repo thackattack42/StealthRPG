@@ -142,7 +142,6 @@ void ARPG_Tutorial_SeriesCharacter::Look(const FInputActionValue& Value)
 
 void ARPG_Tutorial_SeriesCharacter::Sneak(const FInputActionValue& Value)
 {
-	printf_s("Sneak");
 	if (Controller != nullptr)
 	{
 		UCharacterMovementComponent* CharMove = GetCharacterMovement();
@@ -161,21 +160,22 @@ void ARPG_Tutorial_SeriesCharacter::Sneak(const FInputActionValue& Value)
 
 void ARPG_Tutorial_SeriesCharacter::Vault(const FInputActionValue& Value)
 {
-	printf_s("Vault");
 	const TArray<AActor*>ActorsToIgnore;
 	FHitResult OutHit;
+	
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		FVector start = GetActorLocation();
-		start.Z = i * 30; // offset spheres by 30 units
+		FVector location = GetActorLocation();
+		FVector offset;
+		offset.Z = i * 30; // offset spheres by 30 units
+		location += offset;
 
-		FRotator rotation = GetActorRotation();
-		FVector forward = UKismetMathLibrary::GetForwardVector(rotation);
-		forward *= 180.0f; // turn forward 180 degrees
+		FVector forward = GetActorForwardVector();
+		forward *= 180.0f; // increase length of the forward vector
 
-		FVector end = start + forward;
+		FVector end = location + forward;
 
-		bool bHasHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), start, end, 5.0f, TraceTypeQuery_MAX, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true);
+		bool bHasHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), location, end, 5.0f, TraceTypeQuery_MAX, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true);
 	}
 }
